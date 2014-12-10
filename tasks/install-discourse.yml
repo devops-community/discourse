@@ -1,0 +1,86 @@
+# Find out more about tasks: http://docs.devo.ps/manual/tasks
+
+id: install-discourse
+name: Install Discourse
+type: task
+
+triggers:
+  events:
+    - node.discourse.create.success
+
+targets:
+  - discourse
+
+vars:
+  workdir: /var/www/discourse
+  rails_env: production
+
+steps:
+  # Fetch the code from GIT
+  - run: devops git update
+    options:
+      repo: '{{ git_url }}'
+      dest: '{{ workdir }}'
+
+  # Set the ruby version to be 2.1.5 using rbenv. Effectively creates a .ruby_version
+  # file that will be used for any of the future ruby commands
+  - description: Set ruby version for discourse
+    run: cd {{ workdir }} ; rbenv local 2.1.5
+
+  # Install the Discourse dependencies via bundle
+  - description: Bundle install
+    run: cd {{ workdir }} ; bundle install
+
+  # The prepare_discourse_config.sh script handles:
+  #  - creation/update of the config/discourse.conf file with the required values
+  #  - creation/update of the nginx vhost config file to proxy the RoR app and
+  #    serve the static assets
+  - description: Prepare discourse config
+    run: devops scripts/prepare_discourse_config.sh
+    options:
+      WORKDIR: '{{ workdir }}'
+      DB_HOST: localhost
+      DB_PORT: '5432'
+      DB_USER: discourse
+      DB_PASS: '{{ nodes.discourse.configuration.postgresql.users.discourse.password }}'
+      DB_NAME: discourse_prod
+      ADMIN_EMAIL: '{{ discourse_admin_email }}'
+      DOMAIN: '{{ domain }}'
+      SMTP_ADDRESS: '{{ smtp_address }}'
+      SMTP_PORT: '{{ smtp_port }}'
+      SMTP_DOMAIN: ''
+      SMTP_USER_NAME: '{{ smtp_user_name }}'
+      SMTP_PASSWORD: '{{ smtp_password }}'
+
+  # Prepare the Discourse database, populate it with seed data (optional)
+  # and compile the assets
+  - description: Install Discourse
+    run: cd {{ workdir }} ; export RAILS_ENV={{ rails_env }}
+         && bundle exec rake db:migrate
+         && bundle exec rake db:seed_fu
+         && bundle exec rake assets:precompile
+
+  # Add Discourse RoR program to supervisord service
+  - run: devops supervisord program add
+    options:
+      name: discourse
+      command: bundle exec rails server --port 3000 --binding 127.0.0.1
+      user: devops
+      env: RAILS_ENV={{ rails_env }}
+      extra: |
+        directory = {{ workdir }}
+
+  # Add sidekiq program (queue manager) to the supervisord service
+  - run: devops supervisord program add
+    options:
+      name: sidekiq
+      command: bundle exec sidekiq -e {{ rails_env }}
+      user: devops
+      env: RAILS_ENV={{ rails_env }}
+      extra: |
+        directory = {{ workdir }}
+
+  # Optional: disable the default nginx vhost to all access via the IP address
+  - run: devops nginx vhost remove
+    options:
+      id: default

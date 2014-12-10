@@ -1,0 +1,65 @@
+# Find out more about nodes: http://docs.devo.ps/manual/nodes
+
+id: discourse
+name: Discourse
+type: server
+
+# Find out more about providers and their defaults
+# in their respective documentations
+provider:
+  name: "{{ provider.name }}"
+  size: "{{ provider.size }}"
+  # location: 
+  # image: 
+
+# The required services are:
+#  - ruby
+#  - nodejs; for its javascript V8 engine used by RoR
+#  - supervisord; to manage the various processes
+#  - postgresql; for persistant DB storage
+#  - redis; for queue / caching
+#  - nginx; front web server to proxy RoR and serve static items
+services:
+  ruby: '*'
+  nodejs: '*'
+  supervisord: '*'
+  postgresql: '*'
+  redis: '*'
+  nginx: '*'
+
+#
+# Configuration of the various services
+#
+configuration:
+  server:
+    # Install custom packages required by Discourse
+    packages:
+      - imagemagick
+      - advancecomp 
+      - gifsicle 
+      - jpegoptim 
+      - libjpeg-progs 
+      - optipng 
+      - pngcrush
+      - libxml2 
+      - libpq-dev
+
+  ruby:
+    versions:
+      # Install custom version of Ruby and required Gems
+      2.1.5:
+        gems: 
+          - bundler
+          - rails
+
+  postgresql:
+    # Create discourse user
+    users: 
+      - name: discourse
+    # Create discourse_prod database with full accessto discourse user
+    databases:
+      - name: discourse_prod
+        users: 
+          - discourse
+
+

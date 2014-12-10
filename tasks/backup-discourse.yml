@@ -1,0 +1,30 @@
+# Find out more about tasks: http://docs.devo.ps/manual/tasks
+
+id: backup-discourse
+name: Backup Discourse
+type: task
+
+targets:
+  - discourse
+
+triggers:
+  crons:
+    # At 4am every day - via devo.ps
+    - '0 4 * * *'
+  webhooks: 
+    - path: backup/discourse
+
+vars:
+  workdir: /var/www/discourse
+
+steps:
+  # Backup the PostgreSQL discourse database and workdir
+  - run: devops backup run
+    options:
+      path: '/opt/backup/%Y/%m/%d/%H-%M/discourse'
+      files:
+        - '{{ workdir }}'
+      postgresql_dbs:
+        - discourse
+      redis_dbs:
+        - all

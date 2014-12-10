@@ -1,0 +1,64 @@
+name: Discourse
+description: A simple setup of Discourse, using NGINX, RoR, PostgreSQL, Redis.
+image: https://raw.githubusercontent.com/devops-community/discourse/master/discourse-logo.png
+vars:
+  git_url:
+    label: App Git URL
+    default: https://github.com/discourse/discourse.git
+    description: The Git URL of the app you want to deploy
+  discourse_admin_email:
+    label: Admin email of Discourse
+    description: The administrator email of your Discourse site; you can specify multiple emails (comma separated)
+  domain:
+    label: Discourse website domain
+    default: discourse.example.com
+    description: The domain name you want to access your Discourse site on.
+  provider.name:
+    label: Cloud provider
+    default: digitalocean
+    description: The id of the provider you want to use, see http://docs.devo.ps/manual/nodes/#format
+  provider.size:
+    label: Server size
+    default: 66
+    description: Size of the server you will deploy your app on, see http://docs.devo.ps/providers/digitalocean/
+  smtp_address:
+    label: SMTP address of the server
+    default: smtp.mandrillapp.com
+    description: Address of the SMTP server used to send the mail notifications. Mandrill is strongly recommended.
+  smtp_port:
+    label: SMTP port 
+    default: 587
+    description: Port of the SMTP server used to send the mail notifications.
+  smtp_user_name:
+    label: SMTP username
+    default:
+    description: Username used to connect to the SMTP server.
+  smtp_password:
+    label: SMTP password
+    default:
+    description: Password used to connect to the SMTP server. For Mandrill, it is an API key with the raw_send priviledge enabled.
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
