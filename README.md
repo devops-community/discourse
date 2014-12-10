@@ -21,11 +21,11 @@ Once the information entered, the server will automatically start to be deployed
 
 This setup contains one server (`nodes/discourse.yml`) with **Nginx**, **Ruby**, **Redis**, **Nodejs**, **PostgreSQL** (with a "discourse" user and a "discourse_prod" database)
 
-We have included as well a task (`tasks/build-discourse.yml`) that:
+We have included as well a task (`tasks/install-discourse.yml`) that:
 
 1. Clone the discourse app from GitHub (set to [official Discourse GitHub repository](https://github.com/discourse/discourse) by default).
 1. Install all your application dependencies via bundle
-1. Run a build script (`scripts/prepare_discourse_config.sh`) that will:
+1. Run a config script (`scripts/prepare_discourse_config.sh`) that will:
   1. Write the Discourse configuration file (to connect it to PostgreSQL, and SMTP details)
   1. Prepare the Nginx Vhost config file
 1. Prepare the database
