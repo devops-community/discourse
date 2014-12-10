@@ -111,7 +111,7 @@ sed -i.bak "s/proxy_cache_path\s*\/var\/nginx\/cache\s*/proxy_cache_path \/var\/
 
 # Now preparing the nginx config
 sudo cp -a nginx.devo.ps.conf /etc/nginx/sites-available/discourse
-sudo rm /etc/nginx/sites-enabled/discourse
+[ -e /etc/nginx/sites-enabled/discourse ] && sudo rm /etc/nginx/sites-enabled/discourse
 sudo ln -s ../sites-available/discourse /etc/nginx/sites-enabled/discourse
 
 # Reload nginx config
