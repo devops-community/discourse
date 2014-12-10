@@ -33,6 +33,15 @@ We have included as well a task (`tasks/install-discourse.yml`) that:
 
 The current repo provides a production ready setup of Discourse. Hack at will!
 
+## Where are the logs?
+
+May you want to investigate possible issues, you may want to dig in the following logs on the server you have created:
+
+- `/var/www/discourse/log/production.log`; for the RoR / Discourse logs (internals)
+- `/var/log/supervisor/discourse-std*`; for the RoR / Discourse logs
+- `/var/log/supervisor/sidekiq-std*`; for the Sidekiq logs
+- `/var/log/nginx/access.log` and `/var/log/nginx/error.log`; for the basic web logs
+
 ## Questions?
 
 If you have any question, come ask us on the [devo.ps chat](https://www.hipchat.com/gyHEHtsXZ) or shoot us an email at [help@devo.ps](mailto:help@devo.ps) (though, you should really just [ask us in the chat](https://www.hipchat.com/gyHEHtsXZ)).
